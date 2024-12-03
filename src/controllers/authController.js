@@ -21,12 +21,10 @@ exports.register = async (req, res) => {
       [name, email, hashedPassword, role],
     );
 
-    res
-      .status(201)
-      .json({
-        message: "User registered successfully",
-        userId: result.insertId,
-      });
+    res.status(201).json({
+      message: "User registered successfully",
+      userId: result.insertId,
+    });
   } catch (err) {
     res
       .status(500)
@@ -68,4 +66,14 @@ exports.login = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error logging in", error: err.message });
   }
+};
+
+exports.logout = (req, res) => {
+  return req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Failed to log out" });
+    }
+    res.clearCookie("connect.sid"); // Clear the session cookie
+    res.status(200).json({ message: "Logged out successfully" });
+  });
 };
